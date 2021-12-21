@@ -4,6 +4,9 @@ on:
   push:
     branches:
       - 'main'
+      tags:
+      - 'v*'
+      
 
 jobs:
   docker:
@@ -27,5 +30,8 @@ jobs:
         with:
           context: .
           file: ./Dockerfile
+          builder: ${{ steps.buildx.outputs.name }}
           push: true
           tags: ${{ secrets.DOCKER_HUB_USERNAME }}/html_play:latest
+          cache-from: type=registry,ref=${{ secrets.DOCKER_HUB_USERNAME }}/html_play:buildcache
+          cache-to: type=registry,ref=${{ secrets.DOCKER_HUB_USERNAME }}/html_play:buildcache,mode=max
